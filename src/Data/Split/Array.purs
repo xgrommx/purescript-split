@@ -38,6 +38,7 @@ import Data.Common (Chunk(..), CondensePolicy(..), DelimPolicy(..), Delimiter(..
 import Data.Foldable (null, elem)
 import Data.Maybe (Maybe(..))
 import Data.Tuple (Tuple(..))
+import Partial.Unsafe (unsafeCrashWith)
 
 -- | A delimiter is an `array` of predicates on elements, matched by some contiguous subsequence of an `array`.
 type DelimiterArray = Delimiter Array
@@ -429,12 +430,14 @@ build g = g (\x xs -> x : xs) []
 -- | whenever n evenly divides the length of xs
 
 chunksOf :: forall e. Int -> Array e -> Array (Array e)
-chunksOf i ls = map (take i) (build (splitter ls)) 
-  where
-    splitter :: forall a. Array e -> (Array e -> a -> a) -> a -> a
-    splitter l c n = case uncons l of
-      Nothing -> n
-      Just _ -> l `c` splitter (drop i l) c n
+chunksOf i ls
+  | i < 0 = unsafeCrashWith "index should be bigger than 0"
+  | otherwise = map (take i) (build (splitter ls))
+    where
+      splitter :: forall a. Array e -> (Array e -> a -> a) -> a -> a
+      splitter l c n = case uncons l of
+        Nothing -> n
+        Just _ -> l `c` splitter (drop i l) c n
 
 splitAt :: forall a. Int -> Array a -> { before :: Array a, after :: Array a }
 splitAt n xs = { before: take n xs, after: drop n xs }
