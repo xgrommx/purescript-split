@@ -95,6 +95,30 @@ Generic (Chunk l a) _
 (Show (l a), Show a) => Show (Chunk l a)
 ```
 
+#### `fromElem`
+
+``` purescript
+fromElem :: forall l a. Chunk l a -> l a
+```
+
+Untag a Chunk.
+
+#### `isDelim`
+
+``` purescript
+isDelim :: forall l a. Chunk l a -> Boolean
+```
+
+Test whether a Chunk is a delimiter.
+
+#### `isText`
+
+``` purescript
+isText :: forall l a. Chunk l a -> Boolean
+```
+
+Test whether a Chunk is text.
+
 #### `Splitter`
 
 ``` purescript

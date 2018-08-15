@@ -68,6 +68,21 @@ derive instance eqChunk :: (Eq1 l, Eq a) => Eq (Chunk l a)
 instance showChunk :: (Show (l a), Show a) => Show (Chunk l a) where
   show c = genericShow c
 
+-- | Untag a Chunk.
+fromElem :: forall l a. Chunk l a -> l a
+fromElem (Text as) = as
+fromElem (Delim as) = as
+
+-- | Test whether a Chunk is a delimiter.
+isDelim :: forall l a. Chunk l a -> Boolean
+isDelim (Delim _) = true
+isDelim _ = false
+
+-- | Test whether a Chunk is text.
+isText :: forall l a. Chunk l a -> Boolean
+isText (Text _) = true
+isText _ = false
+
 -- | A splitting strategy for a `l`.
 -- |
 -- | * `delimiter` What delimiter to split on

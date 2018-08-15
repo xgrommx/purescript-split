@@ -190,7 +190,7 @@ simpleMovingAverage priceArray =
 type SplitterArray a = Splitter Array a
 ```
 
- A splitting strategy for an `array`.
+A splitting strategy for an `array`.
 
 #### `defaultSplitter`
 

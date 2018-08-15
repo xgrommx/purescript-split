@@ -33,7 +33,7 @@ module Data.Split.List
 
 import Prelude
 
-import Data.Common (Chunk(..), CondensePolicy(..), DelimPolicy(..), Delimiter(..), EndPolicy(..), Splitter)
+import Data.Common (Chunk(..), CondensePolicy(..), DelimPolicy(..), Delimiter(..), EndPolicy(..), Splitter, fromElem, isDelim, isText)
 import Data.Foldable (elem, null)
 import Data.List (List(..), concatMap, drop, filter, length, singleton, span, take, (:))
 import Data.Maybe (Maybe(..))
@@ -71,18 +71,6 @@ splitInternal d xxs = let Tuple xs match = breakDelim d xxs in
       toSplitList Nothing = Nil
       toSplitList (Just ({ left: Nil, right: r : rs })) = (Delim Nil) : Text (singleton r) : splitInternal d rs
       toSplitList (Just ({ left, right })) = Delim left : splitInternal d right
-
-fromElem :: forall a. ChunkList a -> List a
-fromElem (Text as) = as
-fromElem (Delim as) = as
-
-isDelim :: forall a. ChunkList a -> Boolean
-isDelim (Delim _) = true
-isDelim _ = false
-
-isText :: forall a. ChunkList a -> Boolean
-isText (Text _) = true
-isText _ = false
 
 breakDelim :: forall a. DelimiterList a -> List a -> Tuple (List a) (Maybe { left :: List a, right :: List a })
 breakDelim (Delimiter Nil) xs = Tuple Nil (Just { left: Nil, right: xs })

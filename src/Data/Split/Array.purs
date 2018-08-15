@@ -34,7 +34,7 @@ module Data.Split.Array
 import Prelude
 
 import Data.Array (concatMap, drop, filter, length, span, take, uncons, (:))
-import Data.Common (Chunk(..), CondensePolicy(..), DelimPolicy(..), Delimiter(..), EndPolicy(..), Splitter)
+import Data.Common (Chunk(..), CondensePolicy(..), DelimPolicy(..), Delimiter(..), EndPolicy(..), Splitter, fromElem, isDelim, isText)
 import Data.Foldable (null, elem)
 import Data.Maybe (Maybe(..))
 import Data.Tuple (Tuple(..))
@@ -46,7 +46,7 @@ type DelimiterArray = Delimiter Array
 type ChunkArray = Chunk Array
 -- | 
 type SplitArray a = Array (ChunkArray a)
--- |  A splitting strategy for an `array`.
+-- | A splitting strategy for an `array`.
 type SplitterArray a = Splitter Array a
 
 -- | The default splitting strategy: 
@@ -74,21 +74,6 @@ matchDelim (Delimiter fs) xs = case uncons fs, uncons xs of
   Just r1, Just r2
     | r1.head r2.head -> matchDelim (Delimiter r1.tail) r2.tail >>= \t -> Just ({left: r2.head : t.left, right: t.right})
     | otherwise -> Nothing
-
--- | Untag a Chunk.
-fromElem :: ChunkArray ~> Array
-fromElem (Text as) = as
-fromElem (Delim as) = as
-
--- | Test whether a Chunk is a delimiter.
-isDelim :: forall a. ChunkArray a -> Boolean
-isDelim (Delim _) = true
-isDelim _ = false
-
--- | Test whether a Chunk is text.
-isText :: forall a. ChunkArray a -> Boolean
-isText (Text _) = true
-isText _ = false
 
 breakDelim :: forall a. DelimiterArray a -> Array a -> Tuple (Array a) (Maybe { left :: Array a, right :: Array a })
 breakDelim d@(Delimiter fs) xs = case uncons fs, uncons xs of
