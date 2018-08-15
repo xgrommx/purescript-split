@@ -37,6 +37,7 @@ import Data.Array (concatMap, drop, filter, length, span, take, uncons, (:))
 import Data.Common (Chunk(..), CondensePolicy(..), DelimPolicy(..), Delimiter(..), EndPolicy(..), Splitter)
 import Data.Foldable (null, elem)
 import Data.Maybe (Maybe(..))
+import Data.Split.List (divvy)
 import Data.Tuple (Tuple(..))
 
 type DelimiterArray = Delimiter Array
@@ -282,6 +283,13 @@ chop :: forall a b. (Array a -> { left:: b, right :: Array a }) -> Array a -> Ar
 chop f as = case uncons as of
   Nothing -> []
   Just _ -> let r = f as in r.left : chop f r.right
+
+-- | Divides up an input array into a set of subarrays, according to 'n' and 'm'
+-- | input specifications you provide. Each subarray will have 'n' items, and the
+-- | start of each subarray will be offset by 'm' items from the previous one.
+-- | ```purescript
+-- | divvy 5 5 (1..20) == [[1,2,3,4,5],[6,7,8,9,10],[11,12,13,14,15],[16,17,18,19,20]]
+-- | ```
 
 divvy :: forall a. Int -> Int -> Array a -> Array (Array a)
 divvy n m l = case uncons l of
